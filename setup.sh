@@ -25,7 +25,7 @@ echo "--- Début de l'installation du serveur Pi ---"
 # --- 1. Installation des dépendances ---
 echo "[1/5] Installation des paquets système et Python..."
 apt update && apt upgrade -y
-apt install -y hostapd dnsmasq samba python3-pip git
+apt install -y hostapd dnsmasq samba python3-pip git ntfs-3g
 if [ $? -ne 0 ]; then echo "ERREUR: L'installation des paquets a échoué." >&2; exit 1; fi
 
 apt install -y python3-flask

@@ -9,8 +9,8 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-SSID=$1
-PASSWORD=$2
+SSID="$1"
+PASSWORD="$2"
 HOSTAPD_CONF="/etc/hostapd/hostapd.conf"
 
 # Validation simple
