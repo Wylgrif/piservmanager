@@ -68,11 +68,33 @@ def save_settings():
     print(f"Disque à partager : {drive_to_share}")
     print(f"Mot de passe de partage : {'*' * len(share_password) if share_password else 'N/A'}")
 
-    # --- Logique future pour le Pi ---
-    # Ici on appellera les scripts bash pour appliquer les changements
-    # ex: subprocess.run(["sudo", "bash", "scripts/update_wifi.sh", wifi_ssid, wifi_password])
+    # --- Application des changements sur le Pi ---
+    try:
+        # Mise à jour du Wi-Fi (uniquement si les deux champs sont remplis)
+        if wifi_ssid and wifi_password:
+            print(f"Exécution du script de mise à jour Wi-Fi pour le SSID : {wifi_ssid}")
+            result_wifi = subprocess.run(
+                ["sudo", "bash", "scripts/update_wifi.sh", wifi_ssid, wifi_password],
+                check=True, capture_output=True, text=True
+            )
+            print(f"Sortie du script Wi-Fi : {result_wifi.stdout}")
 
-    return jsonify({"status": "success", "message": "Paramètres reçus ! La logique d'application sera implémentée prochainement."})
+        # Mise à jour de Samba (uniquement si les deux champs sont remplis)
+        if drive_to_share and share_password:
+             print(f"Exécution du script de mise à jour Samba pour le disque : {drive_to_share}")
+             result_samba = subprocess.run(
+                ["sudo", "bash", "scripts/update_samba.sh", drive_to_share, share_password],
+                check=True, capture_output=True, text=True
+            )
+             print(f"Sortie du script Samba : {result_samba.stdout}")
+        
+        return jsonify({"status": "success", "message": "Paramètres appliqués avec succès ! Les services sont en cours de redémarrage."}) 
+
+    except subprocess.CalledProcessError as e:
+        # Si un des scripts échoue, on log l'erreur et on la renvoie au client
+        error_output = e.stderr
+        print(f"ERREUR lors de l'exécution du script : {error_output}")
+        return jsonify({"status": "error", "message": f"Une erreur est survenue :\n{error_output}"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
