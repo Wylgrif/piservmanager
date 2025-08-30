@@ -28,7 +28,7 @@ apt update && apt upgrade -y
 apt install -y hostapd dnsmasq samba python3-pip git
 if [ $? -ne 0 ]; then echo "ERREUR: L'installation des paquets a échoué." >&2; exit 1; fi
 
-pip3 install Flask
+apt install -y python3-flask
 if [ $? -ne 0 ]; then echo "ERREUR: L'installation de Flask a échoué." >&2; exit 1; fi
 
 echo "--- Paquets installés avec succès."
